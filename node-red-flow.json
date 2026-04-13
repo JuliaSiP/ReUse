@@ -1,0 +1,124 @@
+[
+    {
+        "id": "backoffice_tab",
+        "type": "tab",
+        "label": "ReUse Admin Panel",
+        "disabled": false,
+        "info": "Painel de controle para gestão de funcionalidades da plataforma ReUse."
+    },
+    {
+        "id": "ui_group_config",
+        "type": "ui_group",
+        "name": "Configurações Globais",
+        "tab": "ui_tab_admin",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "ui_tab_admin",
+        "type": "ui_tab",
+        "name": "Backoffice ReUse",
+        "icon": "dashboard",
+        "order": 1
+    },
+    {
+        "id": "switch_exchanges",
+        "type": "ui_switch",
+        "z": "backoffice_tab",
+        "name": "Habilitar Trocas",
+        "label": "Sistema de Trocas Ativo",
+        "tooltip": "Ativa ou desativa a possibilidade de publicar novos itens",
+        "group": "ui_group_config",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "exchanges_enabled",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "x": 140,
+        "y": 100,
+        "wires": [
+            ["api_call_update"]
+        ]
+    },
+    {
+        "id": "text_announcement",
+        "type": "ui_text_input",
+        "z": "backoffice_tab",
+        "name": "Mensagem Global",
+        "label": "Anúncio do Topo",
+        "tooltip": "Mensagem exibida para todos os usuários",
+        "group": "ui_group_config",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "announcement_text",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            ["api_call_update"]
+        ]
+    },
+    {
+        "id": "api_call_update",
+        "type": "function",
+        "z": "backoffice_tab",
+        "name": "Preparar Request",
+        "func": "msg.payload = {\n    key: msg.topic,\n    value: msg.payload,\n    type: msg.topic === 'exchanges_enabled' ? 'boolean' : 'string'\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 130,
+        "wires": [
+            ["http_request_settings"]
+        ]
+    },
+    {
+        "id": "http_request_settings",
+        "type": "http request",
+        "z": "backoffice_tab",
+        "name": "Update API",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": false,
+        "url": "http://localhost:3000/api/settings",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 610,
+        "y": 130,
+        "wires": [
+            ["debug_output"]
+        ]
+    },
+    {
+        "id": "debug_output",
+        "type": "debug",
+        "z": "backoffice_tab",
+        "name": "Log Admin",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 810,
+        "y": 130,
+        "wires": []
+    }
+]

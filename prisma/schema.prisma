@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String   @id @default(cuid())
+  name       String
+  email      String   @unique
+  avatarUrl  String?
+  createdAt  DateTime @default(now())
+  items      Item[]
+  offers     Offer[]
+}
+
+model Item {
+  id          String     @id @default(cuid())
+  title       String
+  description String
+  condition   Condition
+  category    String
+  imageUrl    String?
+  ownerId     String
+  owner       User       @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime   @default(now())
+  offers      Offer[]
+}
+
+model Offer {
+  id                String      @id @default(cuid())
+  itemId            String
+  item              Item        @relation(fields: [itemId], references: [id])
+  offeredById       String
+  offeredBy         User        @relation(fields: [offeredById], references: [id])
+  offeredTitle      String
+  offeredDescription String
+  status            OfferStatus @default(pending)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+enum Condition {
+  new
+  good
+  fair
+  poor
+}
+
+enum OfferStatus {
+  pending
+  accepted
+  rejected
+  canceled
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  type      String   @default("string") // boolean, number, string
+  updatedAt DateTime @updatedAt
+}
