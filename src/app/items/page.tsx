@@ -1,9 +1,8 @@
-import type { Item } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-type ItemDTO = Pick<Item, "id" | "title" | "description" | "category" | "condition">;
+type ItemDTO = { id: string; title: string; description: string; category: string; condition: string };
 
 async function getItems(): Promise<ItemDTO[]> {
   try {
