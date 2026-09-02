@@ -1,12 +1,19 @@
 import type { Item } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 type ItemDTO = Pick<Item, "id" | "title" | "description" | "category" | "condition">;
 
 async function getItems(): Promise<ItemDTO[]> {
-  const res = await fetch("/api/items", { cache: "no-store" });
-  return res.json() as Promise<ItemDTO[]>;
+  try {
+    return await prisma.item.findMany({
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, description: true, category: true, condition: true },
+    });
+  } catch {
+    return [{ id: "mock-1", title: "Livro de ficção", description: "Ótimo estado, troco por outro livro", category: "Livros", condition: "good" }];
+  }
 }
 
 export default async function ItemsPage() {

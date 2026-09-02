@@ -1,17 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import WatsonChatbot from "@/components/WatsonChatbot";
 
 export const metadata: Metadata = {
   title: "ReUse",
@@ -25,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased">
         <header className="bg-green-700 text-white">
           <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
             <Link href="/" className="text-xl font-semibold">ReUse</Link>
@@ -36,6 +26,7 @@ export default function RootLayout({
           </div>
         </header>
         <main>{children}</main>
+        <WatsonChatbot />
         <footer className="bg-green-50 text-green-900">
           <div className="mx-auto max-w-5xl px-6 py-6 text-sm">
             ReUse • Conexões sustentáveis
